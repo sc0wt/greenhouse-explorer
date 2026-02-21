@@ -5,7 +5,7 @@
   left: -10%;
   width: 160%;
   overflow: hidden;
-  transform: rotate(-15deg);
+  transform: rotate(-12deg);
   transform-origin: center center;
   z-index: -10;
   pointer-events: none;
@@ -65,6 +65,7 @@ h1 {
   font-size: 18px;
   color: #a5a5a5;
   letter-spacing: -1px;
+  text-align:right;
   font-family: sans-serif;
   z-index: 10;
 }
@@ -108,7 +109,7 @@ h1 {
   justify-content: center;
 }
 .filter-btn {
-  background: none;
+  background: #0a0a0a;
   border: 1px solid #444;
   color: #888;
   font-family: 'DM Mono', monospace;
@@ -147,7 +148,7 @@ h1 {
   background: #111;
 }
 .intro {
-  color: #555;
+  color: #a2a2a2;
   font-size: 11px;
   text-transform: uppercase;
   margin-bottom: 8px;
@@ -155,16 +156,18 @@ h1 {
 .sentence {
   color: #a1a1a1;
   font-size: 26px;
-  font-family: sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
   letter-spacing: -1px;
   line-height: 1.5em;
   margin: 0 0 20px 0;
 }
 .sentence em {
   color: #e8e8e8;
-  font-size: 36px;
+  /* font-size: 36px; */
   letter-spacing: -1px;
-  font-family: sans-serif;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
   font-style: normal;
 }
 .pill {

@@ -1,0 +1,216 @@
+{
+  "meta": {
+    "document": "STUDY_FRAGMENT",
+    "topic": "CLI commands for Node.js development",
+    "created": "2026-02-20",
+    "parent": "session.json"
+  },
+
+  "commands": {
+    "project_setup": [
+      {
+        "command": "npm init -y",
+        "what_it_does": "Creates a package.json with defaults. The -y flag skips the interactive questionnaire.",
+        "when_you_use_it": "Once, at the start of a new project."
+      },
+      {
+        "command": "npm install express",
+        "alias": "npm i express",
+        "what_it_does": "Downloads a package into node_modules/ and adds it to dependencies in package.json.",
+        "when_you_use_it": "Whenever you need a new library. Can install multiple: npm i express dotenv node-fetch"
+      },
+      {
+        "command": "npm install --save-dev nodemon",
+        "alias": "npm i -D nodemon",
+        "what_it_does": "Installs a package as a devDependency — tools you need while building but not in production.",
+        "when_you_use_it": "For development-only tools like nodemon, linters, test runners."
+      },
+      {
+        "command": "npm uninstall express",
+        "alias": "npm un express",
+        "what_it_does": "Removes a package from node_modules and package.json.",
+        "when_you_use_it": "When you no longer need a dependency."
+      }
+    ],
+
+    "running_your_server": [
+      {
+        "command": "node server.js",
+        "what_it_does": "Runs the file once. You have to manually restart after every code change.",
+        "when_you_use_it": "Quick one-off test, or in production."
+      },
+      {
+        "command": "npx nodemon server.js",
+        "what_it_does": "Runs the file AND watches for changes. Auto-restarts on save.",
+        "detail": "npx means 'run this package' — it finds nodemon in your local node_modules without needing a global install.",
+        "when_you_use_it": "During development. This is your daily driver."
+      },
+      {
+        "command": "npm run dev",
+        "what_it_does": "Runs whatever script is defined under 'dev' in your package.json scripts block.",
+        "detail": "You set this up as: \"dev\": \"nodemon server.js\" in package.json. It's just a shortcut.",
+        "when_you_use_it": "Same as above — just shorter to type."
+      },
+      {
+        "command": "Ctrl+C",
+        "what_it_does": "Kills the running process in your terminal.",
+        "when_you_use_it": "To stop the server before restarting, or when you're done working."
+      }
+    ],
+
+    "navigating_the_filesystem": [
+      {
+        "command": "cd greenhouse-api",
+        "what_it_does": "Change directory. Moves you into a folder.",
+        "when_you_use_it": "You need to be inside your project folder before running node or npm commands."
+      },
+      {
+        "command": "cd ..",
+        "what_it_does": "Go up one directory level.",
+        "when_you_use_it": "When you're too deep."
+      },
+      {
+        "command": "pwd",
+        "what_it_does": "Print working directory. Shows where you currently are.",
+        "when_you_use_it": "When you're lost."
+      },
+      {
+        "command": "ls",
+        "what_it_does": "List files in current directory.",
+        "alias": "ls -la (show hidden files too, like .env and .gitignore)",
+        "when_you_use_it": "To see what's in a folder."
+      },
+      {
+        "command": "mkdir new-project",
+        "what_it_does": "Make a new directory.",
+        "when_you_use_it": "Starting a new project folder."
+      },
+      {
+        "command": "touch .gitignore",
+        "what_it_does": "Creates an empty file.",
+        "when_you_use_it": "Quick way to create config files."
+      }
+    ],
+
+    "inspecting_and_debugging": [
+      {
+        "command": "cat server.js",
+        "what_it_does": "Prints the entire contents of a file to the terminal.",
+        "when_you_use_it": "Quick peek at a file without opening an editor."
+      },
+      {
+        "command": "curl http://localhost:3000/jobs",
+        "what_it_does": "Makes an HTTP request from the terminal and prints the response.",
+        "when_you_use_it": "Testing your API routes without opening a browser."
+      },
+      {
+        "command": "curl -X POST http://localhost:3000/summarize -H 'Content-Type: application/json' -d '{\"title\":\"test\"}'",
+        "what_it_does": "Makes a POST request with a JSON body.",
+        "when_you_use_it": "Testing POST routes like /summarize."
+      },
+      {
+        "command": "node -e \"console.log(process.env.CLAUDE_API_KEY)\"",
+        "what_it_does": "Runs a one-liner of JavaScript. Useful for quick checks.",
+        "when_you_use_it": "Debugging environment variables, testing syntax."
+      }
+    ],
+
+    "git_preview": [
+      {
+        "command": "git init",
+        "what_it_does": "Creates a new git repository in the current folder.",
+        "when_you_use_it": "Once per project, at the start.",
+        "status": "not_yet_covered"
+      },
+      {
+        "command": "git add .",
+        "what_it_does": "Stages all changed files for the next commit.",
+        "status": "not_yet_covered"
+      },
+      {
+        "command": "git commit -m \"initial commit\"",
+        "what_it_does": "Saves a snapshot of your staged files with a message.",
+        "status": "not_yet_covered"
+      },
+      {
+        "command": "git status",
+        "what_it_does": "Shows what's changed, what's staged, what's not tracked.",
+        "status": "not_yet_covered"
+      }
+    ],
+
+    "environment": [
+      {
+        "command": "node --version",
+        "alias": "node -v",
+        "what_it_does": "Shows installed Node.js version.",
+        "when_you_use_it": "Sanity check that Node is installed."
+      },
+      {
+        "command": "npm --version",
+        "alias": "npm -v",
+        "what_it_does": "Shows installed npm version."
+      },
+      {
+        "command": "which node",
+        "what_it_does": "Shows the full path to the node binary.",
+        "when_you_use_it": "Debugging path issues — 'is my terminal finding the right node?'"
+      },
+      {
+        "command": "echo $PATH",
+        "what_it_does": "Shows all directories your terminal searches for commands.",
+        "when_you_use_it": "When a command 'isn't found' even though you installed it."
+      }
+    ]
+  },
+
+  "javascript_concepts": [
+    {
+      "concept": "fallback value",
+      "syntax": "const page = parseInt(req.query.page) || 1",
+      "what_it_does": "The || operator returns the right side if the left side is falsy (undefined, null, 0, NaN, empty string). So if req.query.page is missing or can't be parsed, page defaults to 1.",
+      "also_known_as": "default value, fallback, short-circuit evaluation",
+      "common_patterns": [
+        "const name = user.name || 'Anonymous'",
+        "const timeout = config.timeout || 3000",
+        "const location = job.location || 'Remote'"
+      ],
+      "gotcha": "|| treats 0 and '' as falsy. If 0 is a valid value, use ?? (nullish coalescing) instead: const count = input ?? 0"
+    },
+    {
+      "concept": "isLoading guard",
+      "syntax": "if (isLoading) return",
+      "what_it_does": "A boolean flag that prevents a function from running while an async operation is still in progress. Set to true before the operation starts, set to false when it finishes.",
+      "also_known_as": "mutex flag, loading lock, request guard, debounce flag",
+      "pattern": "let isLoading = false\nasync function loadMore() {\n  if (isLoading) return\n  isLoading = true\n  // ... do async work ...\n  isLoading = false\n}",
+      "why_it_matters": "Without it, rapid user actions (double-clicks, fast scrolling) can trigger multiple simultaneous requests, causing duplicate data, race conditions, or wasted API calls."
+    },
+    {
+      "concept": "logical NOT operator (!)",
+      "syntax": "!isLoading",
+      "what_it_does": "Flips a boolean. !true becomes false, !false becomes true.",
+      "common_patterns": [
+        "if (!isLoading) — 'if NOT loading'",
+        "if (!hasMore) — 'if there are NOT more pages'",
+        "if (!user) — 'if user is falsy (null, undefined)'"
+      ]
+    },
+    {
+      "concept": "flag / sentinel",
+      "syntax": "let hasMore = true",
+      "what_it_does": "A boolean variable that signals a condition or state. Used to control whether loops continue, buttons appear, or functions execute.",
+      "also_known_as": "flag, sentinel, boolean flag, termination condition (when it controls stopping)",
+      "examples_in_your_code": [
+        "hasMore — controls whether Load More button appears",
+        "isLoading — prevents duplicate fetch requests",
+        "mainBudget.value > 0 — controls whether high-weight phrases can still be picked"
+      ]
+    },
+    {
+      "concept": "textContent vs innerHTML",
+      "syntax": "element.textContent = 'plain text'\nelement.innerHTML = '<em>parsed</em> HTML'",
+      "what_it_does": "textContent sets raw text — any HTML tags appear as visible characters. innerHTML parses the string as HTML — tags become actual DOM elements.",
+      "why_it_matters": "This is why your .filter-count em CSS wasn't working. You were setting textContent, so the browser rendered the literal text '<em>20</em>' instead of creating an em element."
+    }
+  ]
+}

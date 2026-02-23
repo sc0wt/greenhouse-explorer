@@ -64,14 +64,12 @@ body {
 
 /* ── SIDEBAR ── */
 .sidebar {
-  /* UPDATED: fixed instead of sticky — stays visible while scrolling */
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: sticky;
+  margin-top: 10%;
+  align-self: flex-start;
   width: 240px;
   min-width: 240px;
   height: 80vh;
-  margin-top: 10%;
   padding: 55px 24px;
   border-right: 1px solid #222;
   background-color: #0a0a0a;
@@ -79,7 +77,6 @@ body {
   flex-direction: column;
   box-sizing: border-box;
   overflow-y: auto;
-  z-index: 10;
 }
 
 .sidebar-header {
@@ -203,8 +200,6 @@ body {
   flex: 1;
   min-width: 0;
   margin-top: 10%;
-  /* ADDED: offset for fixed sidebar width (240px) */
-  margin-left: 240px;
 }
 
 #output {
@@ -329,4 +324,219 @@ body {
 .load-more:disabled {
   cursor: default;
   color: #333;
+}
+
+
+/* ── HAMBURGER BUTTON (hidden on desktop) ── */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 100;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.hamburger-line {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: #888;
+  transition: all 0.2s ease;
+}
+/* Badge: shows active filter count */
+.hamburger-badge {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background: #e8e8e8;
+  border-radius: 50%;
+}
+.hamburger-badge.visible {
+  display: block;
+}
+
+/* ── SIDEBAR OVERLAY (hidden on desktop) ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 40;
+}
+.sidebar-overlay.open {
+  display: block;
+}
+
+/* ── SCROLL TO TOP (hidden until scrolled) ── */
+.scroll-top {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  right: 16px;
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  color: #888;
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  align-items: center;
+  justify-content: center;
+}
+.scroll-top.visible {
+  display: flex;
+}
+.scroll-top:hover {
+  color: #e8e8e8;
+  border-color: #555;
+}
+
+
+/* ══════════════════════════════════════════════
+   MOBILE — max-width: 768px
+   ══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Show hamburger */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Show scroll-to-top (JS controls .visible class) */
+  .scroll-top {
+    /* display controlled by .visible class */
+  }
+
+  /* Hide ticker on mobile */
+  .ticker-wrap {
+    display: none;
+  }
+
+  /* Stack layout vertically */
+  .layout {
+    flex-direction: column;
+  }
+
+  /* Sidebar becomes slide-in overlay panel */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    min-width: 280px;
+    height: 100vh;
+    margin-top: 0;
+    padding: 72px 24px 24px 24px;
+    border-right: 1px solid #222;
+    background-color: #0a0a0a;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Filter buttons — larger touch targets */
+  .filter-btn {
+    font-size: 14px;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+  .filter-count-num {
+    font-size: 14px;
+  }
+  .filter-group-label {
+    font-size: 13px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
+  /* Sidebar footer */
+  .filter-count em {
+    font-size: 28px;
+  }
+
+  /* Content fills full width */
+  .content {
+    margin-left: 0;
+    margin-top: 72px;
+  }
+
+  /* Job cards — square feel with visible boundary */
+  .user {
+    padding: 28px 20px;
+    margin: 12px 12px;
+    border: 3px solid #1a1a1a;
+    border-bottom: 3px solid #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  .user:hover {
+    background: none;
+  }
+
+  /* Mobile type sizes */
+  .sentence {
+    font-size: 32px;
+    line-height: 1.35em;
+    margin: 0 0 16px 0;
+  }
+  .intro {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  .pill {
+    font-size: 14px;
+    padding: 4px 10px;
+  }
+  .pills {
+    gap: 6px;
+    margin-top: 16px;
+  }
+  .summarize-btn {
+    font-size: 14px;
+    padding: 8px 14px;
+    min-height: 44px;
+  }
+
+  /* Summary */
+  .summary {
+    font-size: 14px;
+    margin-top: 16px;
+    line-height: 1.7;
+  }
+
+  /* No results */
+  .no-results {
+    padding: 28px 20px;
+    font-size: 13px;
+  }
+
+  /* Load more */
+  .load-more {
+    font-size: 13px;
+    padding: 20px;
+    margin: 0 12px;
+  }
 }

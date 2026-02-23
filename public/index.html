@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Greenhouse Explorer</title>
   <link rel="stylesheet" href="greenhouse.css">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Inter:wght@300;600&display=swap" rel="stylesheet">
@@ -15,6 +16,16 @@
       <div class="ticker-segment" id="ticker-clone"></div>
     </div>
   </div>
+
+  <!-- MOBILE: hamburger toggle for filters -->
+  <button class="hamburger" id="hamburger" onclick="toggleMobileFilters()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-badge" id="hamburger-badge"></span>
+  </button>
+
+  <!-- MOBILE: overlay backdrop -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileFilters()"></div>
 
   <!-- MAIN LAYOUT: sidebar + content -->
   <div class="layout">
@@ -45,6 +56,9 @@
     </main>
 
   </div>
+
+  <!-- MOBILE: scroll to top -->
+  <button class="scroll-top" id="scroll-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">↑</button>
 
   <script src="greenhouse.js"></script>
 

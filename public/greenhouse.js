@@ -251,10 +251,6 @@ let usedIntroPhrases = new Set()
 let highMainBudget = 0
 let highIntroBudget = 0
 
-// ADDED: intro phrase sequencing
-let jobRenderIndex = 0     // which job we're on in this render pass
-let lastHadIntro = false    // did the previous job get an intro?
-
 
 // ═══════════════════════════════════════════════
 // WEIGHTED SELECTION ENGINE
@@ -327,9 +323,6 @@ function resetPhraseState() {
   usedIntroPhrases.clear()
   mainBudget.value = 1    // allow 1 high-weight main phrase per render
   introBudget.value = 1   // allow 1 high-weight intro phrase per render
-  // ADDED: reset intro sequencing
-  jobRenderIndex = 0
-  lastHadIntro = false
 }
 
 
@@ -350,32 +343,11 @@ function randomUnit(count) {
   return count === 1 ? pick.s : pick.p
 }
 
-// UPDATED: returns an intro ~30% of the time, with two rules:
-// 1. First job in the render never gets an intro
-// 2. Two consecutive jobs never both get intros
+// Returns an intro ~30% of the time, empty string otherwise
 function maybeIntro() {
-  const currentIndex = jobRenderIndex
-  jobRenderIndex++
-
-  // Rule 1: skip first job
-  if (currentIndex === 0) {
-    lastHadIntro = false
-    return ''
-  }
-
-  // Rule 2: skip if previous job had an intro
-  if (lastHadIntro) {
-    lastHadIntro = false
-    return ''
-  }
-
-  // 30% chance otherwise
   if (Math.random() < 0.3) {
-    lastHadIntro = true
     return `<div class="intro">${randomIntroPhrase()}</div>`
   }
-
-  lastHadIntro = false
   return ''
 }
 
@@ -446,18 +418,29 @@ async function loadMore() {
   isLoading = false
 }
 
+// UPDATED: relative URL for deployment + try/catch for graceful errors
 async function summarize(btn, job) {
   btn.textContent = 'LOADING...'
-  const response = await fetch('/summarize', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(job)
-  })
-  const data = await response.json()
-  const summaryDiv = btn.closest('.user').querySelector('.summary')
-  btn.style.opacity = '0'
-  btn.style.pointerEvents = 'none'
-  staggerHighlights(summaryDiv, data.summary)
+  try {
+    const response = await fetch('/summarize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(job)
+    })
+    if (!response.ok) throw new Error(`Server returned ${response.status}`)
+    const data = await response.json()
+    const summaryDiv = btn.closest('.user').querySelector('.summary')
+    btn.style.opacity = '0'
+    btn.style.pointerEvents = 'none'
+    staggerHighlights(summaryDiv, data.summary)
+  } catch (err) {
+    // ADDED: graceful error — reset button with error message
+    btn.textContent = 'UNAVAILABLE'
+    btn.style.color = '#555'
+    btn.style.borderColor = '#222'
+    btn.style.cursor = 'default'
+    btn.onclick = null
+  }
 }
 
 
@@ -473,40 +456,23 @@ function buildFilters(jobs) {
   const catRow = document.getElementById('filter-row-category')
 
   types.forEach(type => {
-    // UPDATED: count how many jobs have this type
-    const count = jobs.filter(j => j.type === type).length
-
     const btn = document.createElement('button')
     btn.className = 'filter-btn'
-    // UPDATED: innerHTML with label + count spans
-    btn.innerHTML = `<span class="filter-label">${type.replace('_', ' ')}</span><span class="filter-count-num">${count}</span>`
+    btn.textContent = type.replace('_', ' ')
     btn.dataset.field = 'type'
     btn.dataset.value = type
-
-    // Restore active state if filter was already selected
-    if (activeFilters.type.has(type)) {
-      btn.classList.add('active')
-    }
-
     btn.onclick = () => toggleFilter(btn, 'type', type)
     typeRow.appendChild(btn)
   })
 
   categories.forEach(cat => {
-    const count = jobs.filter(j => j.category === cat).length
-
     const btn = document.createElement('button')
     btn.className = 'filter-btn'
-    btn.innerHTML = `<span class="filter-label">${cat}</span><span class="filter-count-num">${count}</span>`
+    btn.textContent = cat
     btn.dataset.field = 'category'
     btn.dataset.value = cat
-
-    if (activeFilters.category.has(cat)) {
-      btn.classList.add('active')
-    }
-
     btn.onclick = () => toggleFilter(btn, 'category', cat)
-    catRow.appendChild(btn)
+    catRow.prepend(btn)
   })
 }
 
@@ -519,6 +485,8 @@ function toggleFilter(btn, field, value) {
     btn.classList.add('active')
   }
   applyFilters()
+  // ADDED: update mobile hamburger badge
+  updateHamburgerBadge()
 }
 
 function applyFilters() {
@@ -604,14 +572,50 @@ function buildTicker() {
 
 
 // ═══════════════════════════════════════════════
+// MOBILE
+// ═══════════════════════════════════════════════
+
+// Toggle filter panel open/closed
+function toggleMobileFilters() {
+  const sidebar = document.getElementById('sidebar')
+  const overlay = document.getElementById('sidebar-overlay')
+  sidebar.classList.toggle('open')
+  overlay.classList.toggle('open')
+}
+
+// Update hamburger badge to show when filters are active
+function updateHamburgerBadge() {
+  const badge = document.getElementById('hamburger-badge')
+  if (!badge) return
+  const totalActive = activeFilters.type.size + activeFilters.category.size
+  if (totalActive > 0) {
+    badge.classList.add('visible')
+  } else {
+    badge.classList.remove('visible')
+  }
+}
+
+// Show scroll-to-top button after scrolling past first screen
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scroll-top')
+  if (!btn) return
+  if (window.scrollY > window.innerHeight * 0.5) {
+    btn.classList.add('visible')
+  } else {
+    btn.classList.remove('visible')
+  }
+})
+
+
+// ═══════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════
 
 async function init() {
   buildTicker()
-  const data = await getJobs(1)    // fetch page 1
-  allJobs = data.jobs              // data.jobs is the array
-  hasMore = data.hasMore           // data.hasMore is the boolean
+  const data = await getJobs(1)
+  allJobs = data.jobs
+  hasMore = data.hasMore
   buildFilters(allJobs)
   renderJobs(allJobs)
 }

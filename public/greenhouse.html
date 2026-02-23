@@ -16,16 +16,35 @@
     </div>
   </div>
 
- 
+  <!-- MAIN LAYOUT: sidebar + content -->
+  <div class="layout">
 
-  <span class="filter-count" id="filter-count"></span>
+    <!-- LEFT SIDEBAR: filters -->
+    <aside class="sidebar" id="sidebar">
+      <!-- <div class="sidebar-header">/ Filter</div> -->
 
-  <div id="filters">
-    <div class="filter-row" id="filter-row-type"></div>
-    <div class="filter-row" id="filter-row-category"></div>
+      <div class="filter-group">
+        <div class="filter-group-label">Type</div>
+        <div class="filter-group-buttons" id="filter-row-type"></div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-label">Category</div>
+        <div class="filter-group-buttons" id="filter-row-category"></div>
+      </div>
+
+      <!-- Result count + unit phrase, pushed to bottom -->
+      <div class="sidebar-footer" id="sidebar-footer">
+        <span class="filter-count" id="filter-count"></span>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT: job cards -->
+    <main class="content">
+      <div id="output">Loading...</div>
+    </main>
+
   </div>
-
-  <div id="output">Loading...</div>
 
   <script src="greenhouse.js"></script>
 

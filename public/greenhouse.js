@@ -251,6 +251,10 @@ let usedIntroPhrases = new Set()
 let highMainBudget = 0
 let highIntroBudget = 0
 
+// ADDED: intro phrase sequencing
+let jobRenderIndex = 0     // which job we're on in this render pass
+let lastHadIntro = false    // did the previous job get an intro?
+
 
 // ═══════════════════════════════════════════════
 // WEIGHTED SELECTION ENGINE
@@ -323,6 +327,9 @@ function resetPhraseState() {
   usedIntroPhrases.clear()
   mainBudget.value = 1    // allow 1 high-weight main phrase per render
   introBudget.value = 1   // allow 1 high-weight intro phrase per render
+  // ADDED: reset intro sequencing
+  jobRenderIndex = 0
+  lastHadIntro = false
 }
 
 
@@ -343,11 +350,32 @@ function randomUnit(count) {
   return count === 1 ? pick.s : pick.p
 }
 
-// Returns an intro ~30% of the time, empty string otherwise
+// UPDATED: returns an intro ~30% of the time, with two rules:
+// 1. First job in the render never gets an intro
+// 2. Two consecutive jobs never both get intros
 function maybeIntro() {
+  const currentIndex = jobRenderIndex
+  jobRenderIndex++
+
+  // Rule 1: skip first job
+  if (currentIndex === 0) {
+    lastHadIntro = false
+    return ''
+  }
+
+  // Rule 2: skip if previous job had an intro
+  if (lastHadIntro) {
+    lastHadIntro = false
+    return ''
+  }
+
+  // 30% chance otherwise
   if (Math.random() < 0.3) {
+    lastHadIntro = true
     return `<div class="intro">${randomIntroPhrase()}</div>`
   }
+
+  lastHadIntro = false
   return ''
 }
 
@@ -387,7 +415,7 @@ function staggerHighlights(element, text) {
 // ═══════════════════════════════════════════════
 
 async function getJobs(page = 1) {
-  const response = await fetch(`http://localhost:3000/jobs?page=${page}`)
+  const response = await fetch(`/jobs?page=${page}`)
   const data = await response.json()
   // data is now { jobs: [...], hasMore: true/false }
   return data
@@ -420,7 +448,7 @@ async function loadMore() {
 
 async function summarize(btn, job) {
   btn.textContent = 'LOADING...'
-  const response = await fetch('http://localhost:3000/summarize', {
+  const response = await fetch('/summarize', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(job)
@@ -445,23 +473,40 @@ function buildFilters(jobs) {
   const catRow = document.getElementById('filter-row-category')
 
   types.forEach(type => {
+    // UPDATED: count how many jobs have this type
+    const count = jobs.filter(j => j.type === type).length
+
     const btn = document.createElement('button')
     btn.className = 'filter-btn'
-    btn.textContent = type.replace('_', ' ')
+    // UPDATED: innerHTML with label + count spans
+    btn.innerHTML = `<span class="filter-label">${type.replace('_', ' ')}</span><span class="filter-count-num">${count}</span>`
     btn.dataset.field = 'type'
     btn.dataset.value = type
+
+    // Restore active state if filter was already selected
+    if (activeFilters.type.has(type)) {
+      btn.classList.add('active')
+    }
+
     btn.onclick = () => toggleFilter(btn, 'type', type)
     typeRow.appendChild(btn)
   })
 
   categories.forEach(cat => {
+    const count = jobs.filter(j => j.category === cat).length
+
     const btn = document.createElement('button')
     btn.className = 'filter-btn'
-    btn.textContent = cat
+    btn.innerHTML = `<span class="filter-label">${cat}</span><span class="filter-count-num">${count}</span>`
     btn.dataset.field = 'category'
     btn.dataset.value = cat
+
+    if (activeFilters.category.has(cat)) {
+      btn.classList.add('active')
+    }
+
     btn.onclick = () => toggleFilter(btn, 'category', cat)
-    catRow.prepend(btn)
+    catRow.appendChild(btn)
   })
 }
 

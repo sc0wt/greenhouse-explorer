@@ -1,11 +1,12 @@
 /* ── TICKER TAPE ── */
 .ticker-wrap {
   position: fixed;
-  top: -10%;
-  left: -10%;
+  /* UPDATED: repositioned — enters from top edge, exits right edge */
+  top: 7%;
+  /* right: 10%; */
   width: 160%;
   overflow: hidden;
-  transform: rotate(-12deg);
+  /* transform: rotate(5deg); */
   transform-origin: center center;
   z-index: -10;
   pointer-events: none;
@@ -18,6 +19,8 @@
 .ticker-segment {
   display: flex;
   flex-shrink: 0;
+  /* ADDED: pad right edge so segments don't fuse at the seam */
+  padding-right: 2px;
 }
 .ticker-item {
   display: inline-block;
@@ -44,40 +47,140 @@ body {
   font-family: 'DM Mono', monospace;
   background: #0a0a0a;
   color: #e8e8e8;
-  padding: 40px;
+  margin: 0;
+  padding: 0;
   font-size: 12px;
   letter-spacing: 0.08em;
   overflow-x: hidden;
 }
-h1 {
+
+
+/* ── LAYOUT: sidebar + content ── */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+
+/* ── SIDEBAR ── */
+.sidebar {
+  /* UPDATED: fixed instead of sticky — stays visible while scrolling */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 240px;
+  min-width: 240px;
+  height: 80vh;
+  margin-top: 10%;
+  padding: 55px 24px;
+  border-right: 1px solid #222;
+  background-color: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.sidebar-header {
   font-size: 11px;
   text-transform: uppercase;
-  color: #888;
+  color: #555;
+  letter-spacing: 0.12em;
   margin-bottom: 32px;
 }
 
+.filter-group {
+  margin-bottom: 28px;
+}
 
-/* ── FILTER COUNT (upper right) ── */
+.filter-group-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 0.14em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #222;
+}
+
+.filter-group-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+
+/* ── FILTER BUTTONS (vertical list style) ── */
+.filter-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 5px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.filter-btn:hover {
+  color: #ccc;
+  background: #161616;
+}
+.filter-btn.active {
+  color: #e8e8e8;
+  background: #1a1a1a;
+}
+.filter-btn.active .filter-label::before {
+  content: '× ';
+  color: #555;
+}
+
+/* Count inside each filter button */
+.filter-count-num {
+  color: #666;
+  font-size: 10px;
+  letter-spacing: 0;
+  transition: color 0.15s ease;
+}
+.filter-btn:hover .filter-count-num {
+  color: #666;
+}
+.filter-btn.active .filter-count-num {
+  color: #888;
+}
+
+
+/* ── SIDEBAR FOOTER (result count) ── */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid #222;
+}
+
 .filter-count {
-  position: fixed;
-  top: 60px;
-  right: 48px;
-  font-size: 18px;
-  color: #a5a5a5;
-  letter-spacing: -1px;
-  text-align:right;
-  font-family: sans-serif;
-  z-index: 10;
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
 }
 .filter-count em {
-  font-size: 48px;
-  color: #e8e8e8;
   font-style: normal;
+  font-size: 32px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  color: #e8e8e8;
   letter-spacing: -2px;
   display: block;
   line-height: 1;
   margin-bottom: 4px;
 }
+
 .easter-egg {
   display: block;
   margin-top: 8px;
@@ -95,57 +198,29 @@ h1 {
 }
 
 
-/* ── FILTERS ── */
-#filters {
-  margin-bottom: 12px;
-  position: relative;
+/* ── CONTENT AREA ── */
+.content {
+  flex: 1;
+  min-width: 0;
+  margin-top: 10%;
+  /* ADDED: offset for fixed sidebar width (240px) */
+  margin-left: 240px;
 }
-.filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 8px;
-  padding-bottom: 12px;
-  justify-content: center;
-}
-.filter-btn {
-  background: #0a0a0a;
-  border: 1px solid #444;
-  color: #888;
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  padding: 4px 12px;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.15s ease;
-}
-.filter-btn:hover {
-  border-color: #888;
-  color: #ccc;
-}
-.filter-btn.active {
-  background: #e8e8e8;
-  border-color: #e8e8e8;
-  color: #0a0a0a;
-}
-.filter-btn.active::after {
-  content: ' ×';
+
+#output {
+  background-color: #0a0a0a;
+  padding: 0;
+  line-height: 2;
 }
 
 
 /* ── JOB CARDS ── */
-#output {
-  background-color: #0a0a0a;
-  padding: 20px;
-  line-height: 2;
-}
 .user {
-  border-bottom: 1px solid #333333;
-  padding: 40px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  padding: 40px 40px;
 }
 .user:hover {
-  background: #111;
+  background: #0e0e0e;
 }
 .intro {
   color: #a2a2a2;
@@ -164,7 +239,6 @@ h1 {
 }
 .sentence em {
   color: #e8e8e8;
-  /* font-size: 36px; */
   letter-spacing: -1px;
   font-family: 'Inter', sans-serif;
   font-weight: 600;
@@ -172,8 +246,8 @@ h1 {
 }
 .pill {
   display: inline-block;
-  border: 1px solid #444;
-  color: #ccc;
+  border: 1px solid #333;
+  color: #999;
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -188,17 +262,18 @@ h1 {
 }
 .summarize-btn {
   background: none;
-  border: 1px solid #444;
-  color: #666;
+  border: 1px solid #333;
+  color: #555;
   font-family: 'DM Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.08em;
   padding: 5px 10px;
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 0;
+  transition: all 0.15s ease;
 }
 .summarize-btn:hover {
-  border-color: #888;
+  border-color: #666;
   color: #888;
 }
 
@@ -225,10 +300,11 @@ h1 {
 }
 .no-results {
   color: #555;
-  padding: 40px 20px;
+  padding: 40px;
   text-transform: uppercase;
   font-size: 11px;
 }
+
 
 /* ── LOAD MORE ── */
 .load-more {
@@ -238,8 +314,8 @@ h1 {
   margin-top: 0;
   background: none;
   border: none;
-  border-top: 1px solid #333;
-  color: #555;
+  border-top: 1px solid #1e1e1e;
+  color: #444;
   font-family: 'DM Mono', monospace;
   font-size: 10px;
   letter-spacing: 0.08em;

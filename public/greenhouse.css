@@ -1,12 +1,9 @@
 /* ── TICKER TAPE ── */
 .ticker-wrap {
   position: fixed;
-  /* UPDATED: repositioned — enters from top edge, exits right edge */
   top: 7%;
-  /* right: 10%; */
   width: 160%;
   overflow: hidden;
-  /* transform: rotate(5deg); */
   transform-origin: center center;
   z-index: -10;
   pointer-events: none;
@@ -19,7 +16,6 @@
 .ticker-segment {
   display: flex;
   flex-shrink: 0;
-  /* ADDED: pad right edge so segments don't fuse at the seam */
   padding-right: 2px;
 }
 .ticker-item {
@@ -153,7 +149,7 @@ body {
 }
 
 
-/* ── SIDEBAR FOOTER (result count) ── */
+/* ── SIDEBAR FOOTER (result count — desktop) ── */
 .sidebar-footer {
   margin-top: auto;
   padding-top: 24px;
@@ -176,6 +172,11 @@ body {
   display: block;
   line-height: 1;
   margin-bottom: 4px;
+}
+
+/* Mobile count at top of sidebar — hidden on desktop */
+.sidebar-count-mobile {
+  display: none;
 }
 
 .easter-egg {
@@ -327,12 +328,12 @@ body {
 }
 
 
-/* ── HAMBURGER BUTTON (hidden on desktop) ── */
+/* ── HAMBURGER (hidden on desktop) ── */
 .hamburger {
   display: none;
   position: fixed;
   top: 16px;
-  right: 16px;
+  right: 24px;
   z-index: 100;
   background: #0a0a0a;
   border: 1px solid #333;
@@ -340,31 +341,15 @@ body {
   height: 44px;
   padding: 0;
   cursor: pointer;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
 }
-.hamburger-line {
-  display: block;
-  width: 18px;
-  height: 1px;
-  background: #888;
-  transition: all 0.2s ease;
-}
-/* Badge: shows active filter count */
-.hamburger-badge {
-  display: none;
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 8px;
-  height: 8px;
-  background: #e8e8e8;
-  border-radius: 50%;
-}
-.hamburger-badge.visible {
-  display: block;
+/* Count number replaces hamburger icon */
+.hamburger-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: #555;
+  letter-spacing: 0;
 }
 
 /* ── SIDEBAR OVERLAY (hidden on desktop) ── */
@@ -382,7 +367,7 @@ body {
   display: block;
 }
 
-/* ── SCROLL TO TOP (hidden until scrolled) ── */
+/* ── SCROLL TO TOP ── */
 .scroll-top {
   display: none;
   position: fixed;
@@ -420,22 +405,17 @@ body {
     display: flex;
   }
 
-  /* Show scroll-to-top (JS controls .visible class) */
-  .scroll-top {
-    /* display controlled by .visible class */
-  }
-
   /* Hide ticker on mobile */
   .ticker-wrap {
     display: none;
   }
 
-  /* Stack layout vertically */
+  /* Stack layout */
   .layout {
     flex-direction: column;
   }
 
-  /* Sidebar becomes slide-in overlay panel */
+  /* Sidebar becomes slide-in overlay */
   .sidebar {
     position: fixed;
     top: 0;
@@ -444,7 +424,7 @@ body {
     min-width: 280px;
     height: 100vh;
     margin-top: 0;
-    padding: 72px 24px 24px 24px;
+    padding: 24px 24px;
     border-right: 1px solid #222;
     background-color: #0a0a0a;
     z-index: 50;
@@ -456,33 +436,58 @@ body {
     transform: translateX(0);
   }
 
-  /* Filter buttons — larger touch targets */
+  /* Show mobile count at top of sidebar */
+  .sidebar-count-mobile {
+    display: block;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #222;
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 0.04em;
+  }
+  .sidebar-count-mobile em {
+    font-style: normal;
+    font-size: 28px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    color: #e8e8e8;
+    letter-spacing: -2px;
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  /* Hide desktop footer count */
+  .sidebar-footer {
+    display: none;
+  }
+
+  /* Filter buttons — touch-friendly, count in brackets */
   .filter-btn {
-    font-size: 14px;
+    font-size: 11px;
     padding: 10px 12px;
-    min-height: 44px;
+    /* min-height: 44px; */
   }
   .filter-count-num {
-    font-size: 14px;
+    font-size: 11px;
   }
   .filter-group-label {
-    font-size: 13px;
+    font-size: 11px;
     margin-bottom: 12px;
     padding-bottom: 8px;
   }
-
-  /* Sidebar footer */
-  .filter-count em {
-    font-size: 28px;
+  .filter-group-buttons {
+    gap: 4px;
   }
 
-  /* Content fills full width */
+  /* Content full width */
   .content {
     margin-left: 0;
     margin-top: 72px;
   }
 
-  /* Job cards — square feel with visible boundary */
+  /* Job cards — square tiles with border */
   .user {
     padding: 28px 20px;
     margin: 12px 12px;
@@ -498,44 +503,44 @@ body {
 
   /* Mobile type sizes */
   .sentence {
-    font-size: 32px;
+    font-size: 26px;
     line-height: 1.35em;
     margin: 0 0 16px 0;
   }
   .intro {
-    font-size: 13px;
+    font-size: 11px;
     margin-bottom: 10px;
   }
   .pill {
-    font-size: 14px;
-    padding: 4px 10px;
+    font-size: 11px;
+    padding: 6px 10px;
+    /* min-height: 44px; */
+    display: inline-flex;
+    align-items: center;
   }
   .pills {
-    gap: 6px;
+    gap: 10px;
     margin-top: 16px;
   }
   .summarize-btn {
-    font-size: 14px;
+    font-size: 11px;
     padding: 8px 14px;
-    min-height: 44px;
+    /* min-height: 44px; */
   }
 
-  /* Summary */
   .summary {
-    font-size: 14px;
+    font-size: 13px;
     margin-top: 16px;
     line-height: 1.7;
   }
 
-  /* No results */
   .no-results {
     padding: 28px 20px;
-    font-size: 13px;
+    font-size: 11px;
   }
 
-  /* Load more */
   .load-more {
-    font-size: 13px;
+    font-size: 11px;
     padding: 20px;
     margin: 0 12px;
   }
